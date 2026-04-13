@@ -1,0 +1,2 @@
+export CLAUDE_CONFIG_DIR="$PWD/.claude-config"
+export CODEX_HOME="$PWD/.codex-home"
