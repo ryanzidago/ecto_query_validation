@@ -1,16 +1,16 @@
-defmodule EctoQueryRuntimeChecksTest do
+defmodule EctoQueryGuardTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
 
-  alias EctoQueryRuntimeChecks
-  alias EctoQueryRuntimeChecks.Error
-  alias EctoQueryRuntimeChecks.NamedJoinBindings
+  alias EctoQueryGuard
+  alias EctoQueryGuard.Error
+  alias EctoQueryGuard.NamedJoinBindings
   alias TestSupport.Post
 
   describe "opt_keys/1" do
     test "returns keys for the configured checks" do
-      assert EctoQueryRuntimeChecks.opt_keys(checks: [NamedJoinBindings]) == [
+      assert EctoQueryGuard.opt_keys(checks: [NamedJoinBindings]) == [
                :enabled,
                :validate_named_bindings
              ]
@@ -22,10 +22,10 @@ defmodule EctoQueryRuntimeChecksTest do
       query = from(post in Post, as: :post)
 
       assert {^query, [timeout: 15_000]} =
-               EctoQueryRuntimeChecks.prepare_query(
+               EctoQueryGuard.prepare_query(
                  :all,
                  query,
-                 [timeout: 15_000, ecto_query_runtime_checks: [enabled: false]],
+                 [timeout: 15_000, ecto_query_guard: [enabled: false]],
                  checks: [NamedJoinBindings]
                )
     end
@@ -37,12 +37,12 @@ defmodule EctoQueryRuntimeChecksTest do
         |> join(:inner, [post: post], other in Post, on: other.id == post.id)
 
       assert {^query, []} =
-               EctoQueryRuntimeChecks.prepare_query(
+               EctoQueryGuard.prepare_query(
                  :all,
                  query,
                  [
-                   ecto_query_runtime_checks: [validate_named_bindings: true],
-                   ecto_query_runtime_checks: [enabled: false]
+                   ecto_query_guard: [validate_named_bindings: true],
+                   ecto_query_guard: [enabled: false]
                  ],
                  checks: [NamedJoinBindings]
                )
@@ -52,7 +52,7 @@ defmodule EctoQueryRuntimeChecksTest do
       query = join(Post, :inner, [post], other in Post, on: other.id == post.id)
 
       assert_raise Error, ~r/Runtime query check failed for :all/, fn ->
-        EctoQueryRuntimeChecks.prepare_query(
+        EctoQueryGuard.prepare_query(
           :all,
           query,
           [],
@@ -65,7 +65,7 @@ defmodule EctoQueryRuntimeChecksTest do
       query = join(Post, :inner, [post], other in Post, on: other.id == post.id)
 
       assert {^query, [ecto_query: :preload]} =
-               EctoQueryRuntimeChecks.prepare_query(
+               EctoQueryGuard.prepare_query(
                  :all,
                  query,
                  [ecto_query: :preload],
@@ -77,12 +77,12 @@ defmodule EctoQueryRuntimeChecksTest do
       query = from(post in Post, as: :post)
 
       assert_raise ArgumentError,
-                   ~r/expected :ecto_query_runtime_checks to be a keyword list/,
+                   ~r/expected :ecto_query_guard to be a keyword list/,
                    fn ->
-                     EctoQueryRuntimeChecks.prepare_query(
+                     EctoQueryGuard.prepare_query(
                        :all,
                        query,
-                       [ecto_query_runtime_checks: :invalid],
+                       [ecto_query_guard: :invalid],
                        checks: [NamedJoinBindings]
                      )
                    end
@@ -91,11 +91,11 @@ defmodule EctoQueryRuntimeChecksTest do
     test "raises on unknown nested runtime opts" do
       query = from(post in Post, as: :post)
 
-      assert_raise ArgumentError, ~r/unknown :ecto_query_runtime_checks option/, fn ->
-        EctoQueryRuntimeChecks.prepare_query(
+      assert_raise ArgumentError, ~r/unknown :ecto_query_guard option/, fn ->
+        EctoQueryGuard.prepare_query(
           :all,
           query,
-          [ecto_query_runtime_checks: [unknown: true]],
+          [ecto_query_guard: [unknown: true]],
           checks: [NamedJoinBindings]
         )
       end
@@ -105,7 +105,7 @@ defmodule EctoQueryRuntimeChecksTest do
       query = from(post in Post, as: :post)
 
       assert {^query, []} =
-               EctoQueryRuntimeChecks.prepare_query(
+               EctoQueryGuard.prepare_query(
                  :all,
                  query,
                  [runtime_checks: [enabled: false]],

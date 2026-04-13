@@ -1,9 +1,9 @@
-defmodule EctoQueryRuntimeChecks.MixProject do
+defmodule EctoQueryGuard.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :ecto_query_runtime_checks,
+      app: :ecto_query_guard,
       version: "0.1.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
@@ -30,7 +30,7 @@ defmodule EctoQueryRuntimeChecks.MixProject do
     [
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/ryanzidago/ecto_query_runtime_checks"
+        "GitHub" => "https://github.com/ryanzidago/ecto_query_guard"
       }
     ]
   end

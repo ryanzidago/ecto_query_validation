@@ -1,9 +1,9 @@
-defmodule EctoQueryRuntimeChecks.ImmutableUpdateFieldsTest do
+defmodule EctoQueryGuard.ImmutableUpdateFieldsTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
 
-  alias EctoQueryRuntimeChecks.ImmutableUpdateFields
+  alias EctoQueryGuard.ImmutableUpdateFields
   alias TestSupport.Post
 
   test "fails updates to default immutable fields" do

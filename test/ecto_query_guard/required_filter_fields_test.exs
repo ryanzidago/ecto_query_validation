@@ -1,9 +1,9 @@
-defmodule EctoQueryRuntimeChecks.RequiredFilterFieldsTest do
+defmodule EctoQueryGuard.RequiredFilterFieldsTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
 
-  alias EctoQueryRuntimeChecks.RequiredFilterFields
+  alias EctoQueryGuard.RequiredFilterFields
   alias TestSupport.Post
 
   test "fails when configured root fields are not filtered" do

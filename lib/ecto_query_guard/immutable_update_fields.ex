@@ -1,4 +1,4 @@
-defmodule EctoQueryRuntimeChecks.ImmutableUpdateFields do
+defmodule EctoQueryGuard.ImmutableUpdateFields do
   @moduledoc """
   Rejects `update_all` queries that attempt to mutate configured root fields.
 
@@ -9,10 +9,10 @@ defmodule EctoQueryRuntimeChecks.ImmutableUpdateFields do
       ]
   """
 
-  @behaviour EctoQueryRuntimeChecks.Check
+  @behaviour EctoQueryGuard.Check
 
-  alias EctoQueryRuntimeChecks
-  alias EctoQueryRuntimeChecks.Check
+  alias EctoQueryGuard
+  alias EctoQueryGuard.Check
 
   @default_immutable_fields [:id, :inserted_at]
 
@@ -21,11 +21,11 @@ defmodule EctoQueryRuntimeChecks.ImmutableUpdateFields do
 
   @impl Check
   @spec validate(
-          operation :: EctoQueryRuntimeChecks.operation(),
+          operation :: EctoQueryGuard.operation(),
           query :: Ecto.Query.t(),
-          runtime_opts :: EctoQueryRuntimeChecks.runtime_check_opts(),
+          runtime_opts :: EctoQueryGuard.runtime_check_opts(),
           config :: Keyword.t()
-        ) :: :ok | {:errors, EctoQueryRuntimeChecks.errors()}
+        ) :: :ok | {:errors, EctoQueryGuard.errors()}
   def validate(operation, %Ecto.Query{} = query, runtime_opts, config) do
     cond do
       operation != :update_all ->

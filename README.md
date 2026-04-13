@@ -1,13 +1,13 @@
 # Ecto Query Runtime Checks
 
-`ecto_query_runtime_checks` extracts the Repo-level runtime query validation work
+`ecto_query_guard` extracts the Repo-level runtime query validation work
 from Docklane PRs `#174` and `#175` into a standalone Hex package.
 
 The package gives you:
 
-- a reusable `EctoQueryRuntimeChecks.prepare_query/4` helper for `Repo.prepare_query/3`
+- a reusable `EctoQueryGuard.prepare_query/4` helper for `Repo.prepare_query/3`
 - built-in checks for named join bindings, `update_all` timestamp updates, deterministic ordering, immutable update fields, and required filter fields
-- nested per-query opts under `:ecto_query_runtime_checks`
+- nested per-query opts under `:ecto_query_guard`
 - a small extension point for custom checks
 
 ## Installation
@@ -17,7 +17,7 @@ Add the dependency to `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ecto_query_runtime_checks, "~> 0.1.0"}
+    {:ecto_query_guard, "~> 0.1.0"}
   ]
 end
 ```
@@ -32,11 +32,11 @@ defmodule MyApp.Repo do
 
   @impl Ecto.Repo
   def prepare_query(operation, query, opts) do
-    EctoQueryRuntimeChecks.prepare_query(
+    EctoQueryGuard.prepare_query(
       operation,
       query,
       opts,
-      enabled: Application.get_env(:my_app, :ecto_query_runtime_checks, [])[:enabled] == true,
+      enabled: Application.get_env(:my_app, :ecto_query_guard, [])[:enabled] == true,
       check_options: [
         validate_required_filter_fields: [fields: [:tenant_id]],
         validate_immutable_update_fields: [fields: [:id, :inserted_at, :tenant_id]]
@@ -49,17 +49,17 @@ end
 Per-query opt-outs stay nested:
 
 ```elixir
-Repo.all(query, ecto_query_runtime_checks: [enabled: false])
-Repo.one(query, ecto_query_runtime_checks: [validate_named_bindings: false])
+Repo.all(query, ecto_query_guard: [enabled: false])
+Repo.one(query, ecto_query_guard: [validate_named_bindings: false])
 ```
 
 ## Built-in checks
 
-- `EctoQueryRuntimeChecks.NamedJoinBindings`
-- `EctoQueryRuntimeChecks.RequiredFilterFields`
-- `EctoQueryRuntimeChecks.UpdateAllSetsUpdatedAt`
-- `EctoQueryRuntimeChecks.DeterministicOrdering`
-- `EctoQueryRuntimeChecks.ImmutableUpdateFields`
+- `EctoQueryGuard.NamedJoinBindings`
+- `EctoQueryGuard.RequiredFilterFields`
+- `EctoQueryGuard.UpdateAllSetsUpdatedAt`
+- `EctoQueryGuard.DeterministicOrdering`
+- `EctoQueryGuard.ImmutableUpdateFields`
 
 ## Local tooling
 
@@ -72,4 +72,4 @@ The repo includes Docklane-style local setup:
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/ecto_query_runtime_checks>.
+be found at <https://hexdocs.pm/ecto_query_guard>.
