@@ -13,8 +13,8 @@ defmodule EctoQueryValidation.RequiredFilterFieldsTest do
              RequiredFilterFields.validate(
                :all,
                query,
-               [],
-               fields: [:tenant_id, :workspace_id]
+               [fields: [:tenant_id, :workspace_id]],
+               []
              )
 
     assert errors == [
@@ -36,8 +36,8 @@ defmodule EctoQueryValidation.RequiredFilterFieldsTest do
              RequiredFilterFields.validate(
                :all,
                query,
-               [],
-               fields: [:tenant_id, :workspace_id]
+               [fields: [:tenant_id, :workspace_id]],
+               []
              )
   end
 
@@ -48,8 +48,8 @@ defmodule EctoQueryValidation.RequiredFilterFieldsTest do
              RequiredFilterFields.validate(
                :all,
                query,
-               [validate_required_filter_fields: false],
-               fields: [:tenant_id]
+               [fields: [:tenant_id]],
+               validate_required_filter_fields: false
              )
   end
 end

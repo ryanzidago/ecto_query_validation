@@ -32,8 +32,8 @@ defmodule EctoQueryValidation.DeterministicOrderingTest do
              DeterministicOrdering.validate(
                :all,
                query,
-               [validate_deterministic_ordering: true],
-               []
+               [],
+               validate_deterministic_ordering: true
              )
 
     assert message =~ "validate_deterministic_ordering: true"

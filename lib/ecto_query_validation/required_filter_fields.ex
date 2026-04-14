@@ -23,10 +23,10 @@ defmodule EctoQueryValidation.RequiredFilterFields do
   @spec validate(
           operation :: EctoQueryValidation.operation(),
           query :: Ecto.Query.t(),
-          runtime_opts :: EctoQueryValidation.runtime_check_opts(),
-          config :: Keyword.t()
+          check_opts :: Keyword.t(),
+          runtime_opts :: EctoQueryValidation.runtime_check_opts()
         ) :: :ok | {:errors, EctoQueryValidation.errors()}
-  def validate(operation, %Ecto.Query{} = query, runtime_opts, config) do
+  def validate(operation, %Ecto.Query{} = query, check_opts, runtime_opts) do
     cond do
       operation not in @checked_operations ->
         :ok
@@ -35,28 +35,28 @@ defmodule EctoQueryValidation.RequiredFilterFields do
         :ok
 
       true ->
-        case missing_filter_fields(query, config) do
+        case missing_filter_fields(query, check_opts) do
           [] -> :ok
           fields -> {:errors, Enum.map(fields, &missing_filter_field_message(query, &1))}
         end
     end
   end
 
-  defp missing_filter_fields(%Ecto.Query{} = query, config) do
+  defp missing_filter_fields(%Ecto.Query{} = query, check_opts) do
     filtered_fields = filtered_root_fields(query)
 
     query
-    |> required_filter_fields(config)
+    |> required_filter_fields(check_opts)
     |> Enum.reject(&MapSet.member?(filtered_fields, &1))
   end
 
-  defp required_filter_fields(%Ecto.Query{} = query, config) do
+  defp required_filter_fields(%Ecto.Query{} = query, check_opts) do
     schema = schema_module(query)
 
     if function_exported?(schema, :__schema__, 1) do
       schema_fields = schema.__schema__(:fields)
 
-      config
+      check_opts
       |> Keyword.get(:fields, [])
       |> Enum.filter(&(&1 in schema_fields))
     else

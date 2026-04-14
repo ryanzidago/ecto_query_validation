@@ -32,8 +32,8 @@ defmodule EctoQueryValidation.NamedJoinBindingsTest do
              NamedJoinBindings.validate(
                :all,
                query,
-               [validate_named_bindings: false],
-               []
+               [],
+               validate_named_bindings: false
              )
   end
 end

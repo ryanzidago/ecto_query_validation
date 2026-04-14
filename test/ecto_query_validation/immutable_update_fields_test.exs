@@ -21,8 +21,8 @@ defmodule EctoQueryValidation.ImmutableUpdateFieldsTest do
              ImmutableUpdateFields.validate(
                :update_all,
                query,
-               [],
-               fields: [:id, :inserted_at, :tenant_id]
+               [fields: [:id, :inserted_at, :tenant_id]],
+               []
              )
 
     assert message =~ "must not update immutable field `tenant_id`"
@@ -36,8 +36,8 @@ defmodule EctoQueryValidation.ImmutableUpdateFieldsTest do
              ImmutableUpdateFields.validate(
                :update_all,
                query,
-               [validate_immutable_update_fields: false],
-               []
+               [],
+               validate_immutable_update_fields: false
              )
   end
 end

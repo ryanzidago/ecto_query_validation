@@ -15,10 +15,10 @@ defmodule EctoQueryValidation.UpdateAllSetsUpdatedAt do
   @spec validate(
           operation :: EctoQueryValidation.operation(),
           query :: Ecto.Query.t(),
-          runtime_opts :: EctoQueryValidation.runtime_check_opts(),
-          config :: Keyword.t()
+          check_opts :: Keyword.t(),
+          runtime_opts :: EctoQueryValidation.runtime_check_opts()
         ) :: :ok | {:errors, EctoQueryValidation.errors()}
-  def validate(operation, %Ecto.Query{} = query, runtime_opts, _config) do
+  def validate(operation, %Ecto.Query{} = query, _check_opts, runtime_opts) do
     cond do
       operation != :update_all ->
         :ok

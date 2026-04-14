@@ -3,8 +3,8 @@ defmodule EctoQueryValidation.Check do
   Behaviour for individual query runtime checks.
 
   Checks receive the Ecto repo operation, the fully built `%Ecto.Query{}`,
-  runtime opts chosen by the host application, and any host-supplied static
-  config for that check.
+  host-supplied static check opts, and runtime opts chosen by the host
+  application.
   """
 
   alias EctoQueryValidation
@@ -14,7 +14,7 @@ defmodule EctoQueryValidation.Check do
   @callback validate(
               operation :: EctoQueryValidation.operation(),
               query :: Ecto.Query.t(),
-              runtime_opts :: EctoQueryValidation.runtime_check_opts(),
-              config :: Keyword.t()
+              check_opts :: Keyword.t(),
+              runtime_opts :: EctoQueryValidation.runtime_check_opts()
             ) :: :ok | {:errors, EctoQueryValidation.errors()}
 end

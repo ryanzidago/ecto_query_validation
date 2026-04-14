@@ -22,8 +22,8 @@ defmodule EctoQueryValidation do
         ]
 
         errors =
-          Enum.flat_map(checks, fn {check, config} ->
-            case check.validate(operation, query, runtime_opts, config) do
+          Enum.flat_map(checks, fn {check, check_opts} ->
+            case check.validate(operation, query, check_opts, runtime_opts) do
               :ok -> []
               {:errors, errors} -> errors
             end
