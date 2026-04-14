@@ -1,9 +1,9 @@
-defmodule EctoQueryGuard.DeterministicOrderingTest do
+defmodule EctoQueryValidation.DeterministicOrderingTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
 
-  alias EctoQueryGuard.DeterministicOrdering
+  alias EctoQueryValidation.DeterministicOrdering
   alias TestSupport.Post
 
   test "fails limit(1) queries that do not order by the root primary key" do

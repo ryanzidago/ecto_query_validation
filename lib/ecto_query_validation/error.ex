@@ -1,29 +1,29 @@
-defmodule EctoQueryGuard.Error do
+defmodule EctoQueryValidation.Error do
   @moduledoc """
   Raised when an executed query fails one or more runtime validation checks.
   """
 
-  alias EctoQueryGuard
+  alias EctoQueryValidation
 
   defexception [:message, :operation, :errors, :runtime_opts_key]
 
   @type t :: %__MODULE__{
           message: String.t(),
-          operation: EctoQueryGuard.operation(),
-          errors: EctoQueryGuard.errors(),
+          operation: EctoQueryValidation.operation(),
+          errors: EctoQueryValidation.errors(),
           runtime_opts_key: atom()
         }
 
   @type exception_opt ::
-          {:operation, EctoQueryGuard.operation()}
-          | {:errors, EctoQueryGuard.errors()}
+          {:operation, EctoQueryValidation.operation()}
+          | {:errors, EctoQueryValidation.errors()}
           | {:runtime_opts_key, atom()}
 
   @spec exception(list(exception_opt())) :: t()
   def exception(opts) do
     operation = Keyword.fetch!(opts, :operation)
     errors = Keyword.get(opts, :errors, ["runtime query check failed"])
-    runtime_opts_key = Keyword.get(opts, :runtime_opts_key, :ecto_query_guard)
+    runtime_opts_key = Keyword.get(opts, :runtime_opts_key, :ecto_query_validation)
 
     %__MODULE__{
       operation: operation,

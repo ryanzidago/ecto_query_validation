@@ -1,4 +1,4 @@
-defmodule EctoQueryGuard.DeterministicOrdering do
+defmodule EctoQueryValidation.DeterministicOrdering do
   @moduledoc """
   Ensures high-risk read queries have a deterministic root ordering.
 
@@ -6,21 +6,21 @@ defmodule EctoQueryGuard.DeterministicOrdering do
   enabled for other reads with `validate_deterministic_ordering: true`.
   """
 
-  @behaviour EctoQueryGuard.Check
+  @behaviour EctoQueryValidation.Check
 
-  alias EctoQueryGuard
-  alias EctoQueryGuard.Check
+  alias EctoQueryValidation
+  alias EctoQueryValidation.Check
 
   @impl Check
   def option_key, do: :validate_deterministic_ordering
 
   @impl Check
   @spec validate(
-          operation :: EctoQueryGuard.operation(),
+          operation :: EctoQueryValidation.operation(),
           query :: Ecto.Query.t(),
-          runtime_opts :: EctoQueryGuard.runtime_check_opts(),
+          runtime_opts :: EctoQueryValidation.runtime_check_opts(),
           config :: Keyword.t()
-        ) :: :ok | {:errors, EctoQueryGuard.errors()}
+        ) :: :ok | {:errors, EctoQueryValidation.errors()}
   def validate(operation, %Ecto.Query{} = query, runtime_opts, _config) do
     primary_key_fields = primary_key_fields(query)
 

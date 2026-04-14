@@ -1,4 +1,4 @@
-defmodule EctoQueryGuard do
+defmodule EctoQueryValidation do
   @moduledoc """
   Runtime validation for executed `%Ecto.Query{}` values.
 
@@ -17,11 +17,11 @@ defmodule EctoQueryGuard do
 
         @impl Ecto.Repo
         def prepare_query(operation, query, opts) do
-          EctoQueryGuard.prepare_query(
+          EctoQueryValidation.prepare_query(
             operation,
             query,
             opts,
-            enabled: Application.get_env(:my_app, :ecto_query_guard, [])[:enabled] == true,
+            enabled: Application.get_env(:my_app, :ecto_query_validation, [])[:enabled] == true,
             check_options: [
               validate_required_filter_fields: [fields: [:tenant_id]]
             ]
@@ -29,18 +29,18 @@ defmodule EctoQueryGuard do
         end
       end
 
-  Runtime-check opts are nested under `:ecto_query_guard` by default:
+  Runtime-check opts are nested under `:ecto_query_validation` by default:
 
-      Repo.all(query, ecto_query_guard: [enabled: false])
-      Repo.one(query, ecto_query_guard: [validate_named_bindings: false])
+      Repo.all(query, ecto_query_validation: [enabled: false])
+      Repo.one(query, ecto_query_validation: [validate_named_bindings: false])
   """
 
-  alias EctoQueryGuard.DeterministicOrdering
-  alias EctoQueryGuard.Error
-  alias EctoQueryGuard.ImmutableUpdateFields
-  alias EctoQueryGuard.NamedJoinBindings
-  alias EctoQueryGuard.RequiredFilterFields
-  alias EctoQueryGuard.UpdateAllSetsUpdatedAt
+  alias EctoQueryValidation.DeterministicOrdering
+  alias EctoQueryValidation.Error
+  alias EctoQueryValidation.ImmutableUpdateFields
+  alias EctoQueryValidation.NamedJoinBindings
+  alias EctoQueryValidation.RequiredFilterFields
+  alias EctoQueryValidation.UpdateAllSetsUpdatedAt
 
   @type operation :: :all | :update_all | :delete_all | :stream | :insert_all
   @type error :: String.t()
@@ -132,7 +132,7 @@ defmodule EctoQueryGuard do
   end
 
   defp runtime_opts_key(config) do
-    Keyword.get(config, :runtime_opts_key, :ecto_query_guard)
+    Keyword.get(config, :runtime_opts_key, :ecto_query_validation)
   end
 
   defp error_module(config) do

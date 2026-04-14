@@ -1,9 +1,9 @@
-defmodule EctoQueryGuard.UpdateAllSetsUpdatedAtTest do
+defmodule EctoQueryValidation.UpdateAllSetsUpdatedAtTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
 
-  alias EctoQueryGuard.UpdateAllSetsUpdatedAt
+  alias EctoQueryValidation.UpdateAllSetsUpdatedAt
   alias TestSupport.Note
   alias TestSupport.Post
 

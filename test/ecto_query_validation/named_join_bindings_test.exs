@@ -1,9 +1,9 @@
-defmodule EctoQueryGuard.NamedJoinBindingsTest do
+defmodule EctoQueryValidation.NamedJoinBindingsTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
 
-  alias EctoQueryGuard.NamedJoinBindings
+  alias EctoQueryValidation.NamedJoinBindings
   alias TestSupport.Post
 
   test "returns both root and join errors for unnamed joined queries" do

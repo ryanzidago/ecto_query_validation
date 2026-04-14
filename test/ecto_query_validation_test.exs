@@ -1,16 +1,16 @@
-defmodule EctoQueryGuardTest do
+defmodule EctoQueryValidationTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
 
-  alias EctoQueryGuard
-  alias EctoQueryGuard.Error
-  alias EctoQueryGuard.NamedJoinBindings
+  alias EctoQueryValidation
+  alias EctoQueryValidation.Error
+  alias EctoQueryValidation.NamedJoinBindings
   alias TestSupport.Post
 
   describe "opt_keys/1" do
     test "returns keys for the configured checks" do
-      assert EctoQueryGuard.opt_keys(checks: [NamedJoinBindings]) == [
+      assert EctoQueryValidation.opt_keys(checks: [NamedJoinBindings]) == [
                :enabled,
                :validate_named_bindings
              ]
@@ -22,10 +22,10 @@ defmodule EctoQueryGuardTest do
       query = from(post in Post, as: :post)
 
       assert {^query, [timeout: 15_000]} =
-               EctoQueryGuard.prepare_query(
+               EctoQueryValidation.prepare_query(
                  :all,
                  query,
-                 [timeout: 15_000, ecto_query_guard: [enabled: false]],
+                 [timeout: 15_000, ecto_query_validation: [enabled: false]],
                  checks: [NamedJoinBindings]
                )
     end
@@ -37,12 +37,12 @@ defmodule EctoQueryGuardTest do
         |> join(:inner, [post: post], other in Post, on: other.id == post.id)
 
       assert {^query, []} =
-               EctoQueryGuard.prepare_query(
+               EctoQueryValidation.prepare_query(
                  :all,
                  query,
                  [
-                   ecto_query_guard: [validate_named_bindings: true],
-                   ecto_query_guard: [enabled: false]
+                   ecto_query_validation: [validate_named_bindings: true],
+                   ecto_query_validation: [enabled: false]
                  ],
                  checks: [NamedJoinBindings]
                )
@@ -52,7 +52,7 @@ defmodule EctoQueryGuardTest do
       query = join(Post, :inner, [post], other in Post, on: other.id == post.id)
 
       assert_raise Error, ~r/Runtime query check failed for :all/, fn ->
-        EctoQueryGuard.prepare_query(
+        EctoQueryValidation.prepare_query(
           :all,
           query,
           [],
@@ -65,7 +65,7 @@ defmodule EctoQueryGuardTest do
       query = join(Post, :inner, [post], other in Post, on: other.id == post.id)
 
       assert {^query, [ecto_query: :preload]} =
-               EctoQueryGuard.prepare_query(
+               EctoQueryValidation.prepare_query(
                  :all,
                  query,
                  [ecto_query: :preload],
@@ -77,12 +77,12 @@ defmodule EctoQueryGuardTest do
       query = from(post in Post, as: :post)
 
       assert_raise ArgumentError,
-                   ~r/expected :ecto_query_guard to be a keyword list/,
+                   ~r/expected :ecto_query_validation to be a keyword list/,
                    fn ->
-                     EctoQueryGuard.prepare_query(
+                     EctoQueryValidation.prepare_query(
                        :all,
                        query,
-                       [ecto_query_guard: :invalid],
+                       [ecto_query_validation: :invalid],
                        checks: [NamedJoinBindings]
                      )
                    end
@@ -91,11 +91,11 @@ defmodule EctoQueryGuardTest do
     test "raises on unknown nested runtime opts" do
       query = from(post in Post, as: :post)
 
-      assert_raise ArgumentError, ~r/unknown :ecto_query_guard option/, fn ->
-        EctoQueryGuard.prepare_query(
+      assert_raise ArgumentError, ~r/unknown :ecto_query_validation option/, fn ->
+        EctoQueryValidation.prepare_query(
           :all,
           query,
-          [ecto_query_guard: [unknown: true]],
+          [ecto_query_validation: [unknown: true]],
           checks: [NamedJoinBindings]
         )
       end
@@ -105,7 +105,7 @@ defmodule EctoQueryGuardTest do
       query = from(post in Post, as: :post)
 
       assert {^query, []} =
-               EctoQueryGuard.prepare_query(
+               EctoQueryValidation.prepare_query(
                  :all,
                  query,
                  [runtime_checks: [enabled: false]],

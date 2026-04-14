@@ -1,23 +1,23 @@
-defmodule EctoQueryGuard.UpdateAllSetsUpdatedAt do
+defmodule EctoQueryValidation.UpdateAllSetsUpdatedAt do
   @moduledoc """
   Ensures `update_all` queries set `updated_at` when the target schema defines it.
   """
 
-  @behaviour EctoQueryGuard.Check
+  @behaviour EctoQueryValidation.Check
 
-  alias EctoQueryGuard
-  alias EctoQueryGuard.Check
+  alias EctoQueryValidation
+  alias EctoQueryValidation.Check
 
   @impl Check
   def option_key, do: :validate_update_all_updated_at
 
   @impl Check
   @spec validate(
-          operation :: EctoQueryGuard.operation(),
+          operation :: EctoQueryValidation.operation(),
           query :: Ecto.Query.t(),
-          runtime_opts :: EctoQueryGuard.runtime_check_opts(),
+          runtime_opts :: EctoQueryValidation.runtime_check_opts(),
           config :: Keyword.t()
-        ) :: :ok | {:errors, EctoQueryGuard.errors()}
+        ) :: :ok | {:errors, EctoQueryValidation.errors()}
   def validate(operation, %Ecto.Query{} = query, runtime_opts, _config) do
     cond do
       operation != :update_all ->

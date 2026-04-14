@@ -1,4 +1,4 @@
-defmodule EctoQueryGuard.Check do
+defmodule EctoQueryValidation.Check do
   @moduledoc """
   Behaviour for individual query runtime checks.
 
@@ -7,14 +7,14 @@ defmodule EctoQueryGuard.Check do
   the repo integration.
   """
 
-  alias EctoQueryGuard
+  alias EctoQueryValidation
 
   @callback option_key() :: atom()
 
   @callback validate(
-              operation :: EctoQueryGuard.operation(),
+              operation :: EctoQueryValidation.operation(),
               query :: Ecto.Query.t(),
-              runtime_opts :: EctoQueryGuard.runtime_check_opts(),
+              runtime_opts :: EctoQueryValidation.runtime_check_opts(),
               config :: Keyword.t()
-            ) :: :ok | {:errors, EctoQueryGuard.errors()}
+            ) :: :ok | {:errors, EctoQueryValidation.errors()}
 end

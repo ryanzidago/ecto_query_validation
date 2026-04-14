@@ -1,23 +1,23 @@
-defmodule EctoQueryGuard.NamedJoinBindings do
+defmodule EctoQueryValidation.NamedJoinBindings do
   @moduledoc """
   Ensures joined queries name the root source and every join with `as:`.
   """
 
-  @behaviour EctoQueryGuard.Check
+  @behaviour EctoQueryValidation.Check
 
-  alias EctoQueryGuard
-  alias EctoQueryGuard.Check
+  alias EctoQueryValidation
+  alias EctoQueryValidation.Check
 
   @impl Check
   def option_key, do: :validate_named_bindings
 
   @impl Check
   @spec validate(
-          operation :: EctoQueryGuard.operation(),
+          operation :: EctoQueryValidation.operation(),
           query :: Ecto.Query.t(),
-          runtime_opts :: EctoQueryGuard.runtime_check_opts(),
+          runtime_opts :: EctoQueryValidation.runtime_check_opts(),
           config :: Keyword.t()
-        ) :: :ok | {:errors, EctoQueryGuard.errors()}
+        ) :: :ok | {:errors, EctoQueryValidation.errors()}
   def validate(_operation, %Ecto.Query{} = query, runtime_opts, _config) do
     cond do
       not Keyword.get(runtime_opts, option_key(), true) ->

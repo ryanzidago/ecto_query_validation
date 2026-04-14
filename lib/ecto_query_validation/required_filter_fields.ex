@@ -1,4 +1,4 @@
-defmodule EctoQueryGuard.RequiredFilterFields do
+defmodule EctoQueryValidation.RequiredFilterFields do
   @moduledoc """
   Ensures schema-backed queries filter configured root fields.
 
@@ -9,10 +9,10 @@ defmodule EctoQueryGuard.RequiredFilterFields do
       ]
   """
 
-  @behaviour EctoQueryGuard.Check
+  @behaviour EctoQueryValidation.Check
 
-  alias EctoQueryGuard
-  alias EctoQueryGuard.Check
+  alias EctoQueryValidation
+  alias EctoQueryValidation.Check
 
   @checked_operations [:all, :update_all, :delete_all, :stream]
 
@@ -21,11 +21,11 @@ defmodule EctoQueryGuard.RequiredFilterFields do
 
   @impl Check
   @spec validate(
-          operation :: EctoQueryGuard.operation(),
+          operation :: EctoQueryValidation.operation(),
           query :: Ecto.Query.t(),
-          runtime_opts :: EctoQueryGuard.runtime_check_opts(),
+          runtime_opts :: EctoQueryValidation.runtime_check_opts(),
           config :: Keyword.t()
-        ) :: :ok | {:errors, EctoQueryGuard.errors()}
+        ) :: :ok | {:errors, EctoQueryValidation.errors()}
   def validate(operation, %Ecto.Query{} = query, runtime_opts, config) do
     cond do
       operation not in @checked_operations ->

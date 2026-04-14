@@ -1,9 +1,9 @@
-defmodule EctoQueryGuard.MixProject do
+defmodule EctoQueryValidation.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :ecto_query_guard,
+      app: :ecto_query_validation,
       version: "0.1.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
@@ -30,7 +30,7 @@ defmodule EctoQueryGuard.MixProject do
     [
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/ryanzidago/ecto_query_guard"
+        "GitHub" => "https://github.com/ryanzidago/ecto_query_validation"
       }
     ]
   end
