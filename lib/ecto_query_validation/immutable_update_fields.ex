@@ -23,10 +23,10 @@ defmodule EctoQueryValidation.ImmutableUpdateFields do
   @spec validate(
           operation :: EctoQueryValidation.operation(),
           query :: Ecto.Query.t(),
-          check_opts :: Keyword.t(),
+          config :: Keyword.t(),
           runtime_opts :: EctoQueryValidation.runtime_check_opts()
         ) :: :ok | {:errors, EctoQueryValidation.errors()}
-  def validate(operation, %Ecto.Query{} = query, check_opts, runtime_opts) do
+  def validate(operation, %Ecto.Query{} = query, config, runtime_opts) do
     cond do
       operation != :update_all ->
         :ok
@@ -35,30 +35,30 @@ defmodule EctoQueryValidation.ImmutableUpdateFields do
         :ok
 
       true ->
-        case immutable_update_errors(query, check_opts) do
+        case immutable_update_errors(query, config) do
           [] -> :ok
           errors -> {:errors, errors}
         end
     end
   end
 
-  defp immutable_update_errors(%Ecto.Query{} = query, check_opts) do
+  defp immutable_update_errors(%Ecto.Query{} = query, config) do
     updated_fields = updated_fields(query)
     schema = schema_module(query)
 
     query
-    |> immutable_fields_for_schema(check_opts)
+    |> immutable_fields_for_schema(config)
     |> Enum.filter(&(&1 in updated_fields))
     |> Enum.map(&immutable_field_message(schema, &1))
   end
 
-  defp immutable_fields_for_schema(%Ecto.Query{} = query, check_opts) do
+  defp immutable_fields_for_schema(%Ecto.Query{} = query, config) do
     schema = schema_module(query)
 
     if function_exported?(schema, :__schema__, 1) do
       schema_fields = schema.__schema__(:fields)
 
-      check_opts
+      config
       |> Keyword.get(:fields, @default_immutable_fields)
       |> Enum.filter(&(&1 in schema_fields))
     else
