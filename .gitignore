@@ -2,6 +2,10 @@
 /_build/
 .worktrees/*
 !.worktrees/.gitkeep
+.claude/*
+!.claude/.gitkeep
+.codex/*
+!.codex/.gitkeep
 
 # If you run "mix test --cover", coverage assets end up here.
 /cover/
