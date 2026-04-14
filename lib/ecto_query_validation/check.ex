@@ -2,9 +2,9 @@ defmodule EctoQueryValidation.Check do
   @moduledoc """
   Behaviour for individual query runtime checks.
 
-  Checks receive the Ecto repo operation, the fully built `%Ecto.Query{}`, the
-  nested runtime opts passed by the caller, and any static config supplied by
-  the repo integration.
+  Checks receive the Ecto repo operation, the fully built `%Ecto.Query{}`,
+  runtime opts chosen by the host application, and any host-supplied static
+  config for that check.
   """
 
   alias EctoQueryValidation

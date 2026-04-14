@@ -23,7 +23,7 @@ defmodule EctoQueryValidation.MixProject do
   defp elixirc_paths(_env), do: ["lib"]
 
   defp description do
-    "Runtime checks for executed Ecto queries, plus a Repo.prepare_query/3 helper."
+    "Runtime validation check behaviour and built-in checks for executed Ecto queries."
   end
 
   defp package do

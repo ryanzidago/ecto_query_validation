@@ -5,10 +5,9 @@ from Docklane PRs `#174` and `#175` into a standalone Hex package.
 
 The package gives you:
 
-- a reusable `EctoQueryValidation.prepare_query/4` helper for `Repo.prepare_query/3`
+- `EctoQueryValidation.Check`, the behaviour for runtime checks
 - built-in checks for named join bindings, `update_all` timestamp updates, deterministic ordering, immutable update fields, and required filter fields
-- nested per-query opts under `:ecto_query_validation`
-- a small extension point for custom checks
+- no package-owned repo helper, config loader, or error policy
 
 ## Installation
 
@@ -32,21 +31,34 @@ defmodule MyApp.Repo do
 
   @impl Ecto.Repo
   def prepare_query(operation, query, opts) do
-    EctoQueryValidation.prepare_query(
-      operation,
-      query,
-      opts,
-      enabled: Application.get_env(:my_app, :ecto_query_validation, [])[:enabled] == true,
-      check_options: [
-        validate_required_filter_fields: [fields: [:tenant_id]],
-        validate_immutable_update_fields: [fields: [:id, :inserted_at, :tenant_id]]
-      ]
-    )
+    runtime_opts = Keyword.get(opts, :ecto_query_validation, [])
+
+    checks = [
+      {EctoQueryValidation.NamedJoinBindings, []},
+      {EctoQueryValidation.RequiredFilterFields, fields: [:tenant_id]},
+      {EctoQueryValidation.ImmutableUpdateFields, fields: [:id, :inserted_at, :tenant_id]}
+    ]
+
+    errors =
+      Enum.flat_map(checks, fn {check, config} ->
+        case check.validate(operation, query, runtime_opts, config) do
+          :ok -> []
+          {:errors, errors} -> errors
+        end
+      end)
+
+    case errors do
+      [] -> {query, Keyword.delete(opts, :ecto_query_validation)}
+      errors -> raise MyApp.EctoQueryValidationError, operation: operation, errors: errors
+    end
   end
 end
 ```
 
-Per-query opt-outs stay nested:
+`ecto_query_validation: [...]` is just a suggested host-app runtime opt key. The
+package does not require that exact opt shape.
+
+Per-query opt-outs can still look like this if the host app chooses:
 
 ```elixir
 Repo.all(query, ecto_query_validation: [enabled: false])
